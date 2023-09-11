@@ -271,7 +271,7 @@ findRootPower(94143178827)
 >     return("High Card")
 >   }
 > }
->
+> >
 > # Function to simulate a round of 5-card stud poker
 > simulate_poker_round <- function(num_players) {
 >   # Define the suits and ranks
@@ -294,7 +294,7 @@ findRootPower(94143178827)
 >     cat("Player", i, "Hand:", paste(hand$Rank, hand$Suit), "-", hand_name, "\n")
 >   }
 > }
->
+> >
 > # Example usage:
 > simulate_poker_round(4)  # Simulate a round with 4 players
 > ```
@@ -303,7 +303,7 @@ findRootPower(94143178827)
 
 \(b\)
 
-The code can produce conbinations without modification.
+The code can produce combinations without modification.
 
 ```{r}
 simulate_poker_round(10)
