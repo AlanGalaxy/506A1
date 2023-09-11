@@ -309,64 +309,105 @@ The code can produce combinations without modification.
 simulate_poker_round(10)
 ```
 
+```{r}
+simulate_poker_round(10)
+```
+
 \(c\) Explain the code.
 
 ```{r}
-# Function to determine the name of a 5-card poker hand
+#' Function to determine the name of a 5-card poker hand
+#'
+#' @param suits 5 dim vector represents the suit of each card
+#' @param ranks 5 dim vector represents the order of each card
+#'
+#' @return the name of the given 5-card poker hand
+#'
 get_poker_hand_name <- function(suits, ranks) {
   # Ensure that the input vectors are of length 5
   if (length(suits) != 5 || length(ranks) != 5) {
+    # Stop the function and print out information about the error
     stop("Both suits and ranks vectors should have a length of 5.")
   }
   
   # Count the frequency of each rank
+  # table() will build a table containseach factor level and frequency
   rank_counts <- table(ranks)
   
-  # Check for flush and straight
+  # Check for flush. If the hand is flush, suits will only contain one suit, 
+  # unique() will only return that suit. Then the length is 1.
   is_flush <- length(unique(suits)) == 1
+  # Check for straight. If the hand is straight, rank_counts "should" contain 5 
+  # levels, and the max level is 4 bigger than the min level
   is_straight <- length(rank_counts) == 5 && (max(ranks) - min(ranks) == 4)
   
   # Determine the hand name
   if (is_flush && is_straight) {
     return("Straight Flush")
+    # If hand is flush and straight, it is Straight Flush
   } else if (max(rank_counts) == 4) {
     return("Four of a Kind")
+    # If hand has 4 same ranks, it is Four of a Kind
   } else if (max(rank_counts) == 3 && length(rank_counts) == 2) {
     return("Full House")
+    # If hand has 3 same ranks and 2 different ranks, which means it has 3 with 
+    # same rank and 2 with same rank, it is Full House
   } else if (is_flush) {
     return("Flush")
+    # If hand has 5 cards with same flush, it is Flush
   } else if (is_straight) {
     return("Straight")
+    # If hand is straight, it is Straight
   } else if (max(rank_counts) == 3) {
     return("Three of a Kind")
+    # If hand has 3 same ranks, but the other 2 are differnet, it is Three of a kind
   } else if (length(rank_counts) == 3) {
     return("Two Pair")
+    # If hand has 3 different ranks, but max of rank not equal to 3, it is Two Pair
   } else if (length(rank_counts) == 4) {
     return("One Pair")
+    # If hand has 4 differnt ranks, it is One Pair
   } else {
     return("High Card")
+    # If hand does not satisfy any above, then it is High Card
   }
 }
 
-# Function to simulate a round of 5-card stud poker
+#' Function to simulate a round of 5-card stud poker
+#'
+#' @param num_players an postive integer indicates the number of players
+#'
 simulate_poker_round <- function(num_players) {
-  # Define the suits and ranks
+  # Define the suits and ranks, create two vectors
   suits <- c("Hearts", "Diamonds", "Clubs", "Spades")
   ranks <- c(2:10, "Jack", "Queen", "King", "Ace")
   
-  # Create a deck of cards
+  # Create a deck of cards. expand.grid() will create a data frame with all the 
+  # combinations of the vectors. This will generate 52 cards with differnet ranks 
+  # and suits.
   deck <- expand.grid(Rank = ranks, Suit = suits)
   
   # Shuffle the deck
+  # Set the random seed to fix the generation
   set.seed(1)
+  # nrow() will get the number of rows in data frame deck. sample() will generate 
+  # random number from 1 to nrow(deck). Use this as the new row order to get the 
+  # row from origin deck. This will shuffle the deck.
   deck <- deck[sample(nrow(deck)), ]
   
   # Deal 5 cards to each player
+  # Create a list to store the hands
   players <- list()
   for (i in 1:num_players) {
+    # The i-th player gets the 5(i-1)-th to 5i-th rows from shuffled deck
     hand <- deck[((i - 1) * 5 + 1):(i * 5), ]
+    # Assign the hand to i-th player list
     players[[i]] <- hand
+    # Call the function get_poker_hand_name() to get the name of current hand
     hand_name <- get_poker_hand_name(hand$Suit, hand$Rank)
+    # paste() will concatenate vectors and convert into character vector. cat() 
+    # will concate the objects and print it out. This will print out the i-th 
+    # player's 5 cards and the name of the hand.
     cat("Player", i, "Hand:", paste(hand$Rank, hand$Suit), "-", hand_name, "\n")
   }
 }
@@ -387,80 +428,129 @@ simulate_poker_round(4)  # Simulate a round with 4 players
 
 -   Are the names of the hands correct? (See [here](https://www.cardplayer.com/rules-of-poker/hand-rankings) if you're not familiar with poker hands.)
 
-    -   No, they are incorrect. Some have one pair but named as "High Card".
+    -   No, they are incorrect. Some have one pair but named as "High Card". Some have two pair but named as "High Card". Some have 3 cards with same rank, but named as "High Card".
 
 -   Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
 
     -   Yes, there is no duplication in card across hands. If asking more than 10, the first 10 hands are fine, the 10-th hand will have 2 cards and 3 NA's. All the rest hands will be filled with NA's. Card name will be invalid.
 
-My correction code
+**My correction code**
+
+**Note that comments with "\####" at the beginning are the explanations of changes I made.**
 
 ```{r}
-# Function to determine the name of a 5-card poker hand
+#' Function to determine the name of a 5-card poker hand
+#'
+#' @param suits 5 dim vector represents the suit of each card
+#' @param ranks 5 dim vector represents the order of each card
+#'
+#' @return the name of the given 5-card poker hand
+#'
 get_poker_hand_name <- function(suits, ranks) {
   # Ensure that the input vectors are of length 5
   if (length(suits) != 5 || length(ranks) != 5) {
+    # Stop the function and print out information about the error
     stop("Both suits and ranks vectors should have a length of 5.")
   }
   
   # Count the frequency of each rank
+  # table() will build a table containseach factor level and frequency
   rank_counts <- table(ranks)
+  
+  #### table(ranks) also contains the ranks with 0 frequency. Actually length
+  #### (rank_count) = 13. Here we get the ranks whose frequency is bigger than 0.
   valid_rank_counts <- rank_counts[rank_counts != 0]
   
-  # Check for flush and straight
-  # 是不是同花色
-  is_flush <- length(unique(suits)) == 1  # if suits are the same, unique() will output one value, the length is 1.
-  # 是不是顺子
+  # Check for flush. If the hand is flush, suits will only contain one suit, 
+  # unique() will only return that suit. Then the length is 1.
+  is_flush <- length(unique(suits)) == 1
+  # Check for flush. If the hand is flush, suits will only contain one suit, 
+  # unique() will only return that suit. Then the length is 1.
+  #### Here the length() is applied to valid_rank_counts to get the right length.
+  #### ranks is a fector vector, to apply max() and min(), we need as.numeric() to 
+  #### convert them to numeric.
   is_straight <- length(valid_rank_counts) == 5 && (max(as.numeric(ranks)) - min(as.numeric(ranks)) == 4)
   
   # Determine the hand name
   if (is_flush && is_straight && max(as.numeric(ranks)) == 13) {
     return("Royal Flush")
+    #### If hand is flush, straight and the biggest rank is 13(Ace), this is a 
+    #### Royal Flush. The original code does not have this name.
   } else if (is_flush && is_straight) {
     return("Straight Flush")
+    # If hand is flush and straight, it is Straight Flush
   } else if (max(rank_counts) == 4) {
     return("Four of a Kind")
+    # If hand has 4 same ranks, it is Four of a Kind
   } else if (max(rank_counts) == 3 && length(valid_rank_counts) == 2) {
     return("Full House")
-  } else if (is_flush) { # 同花色
+    #### Here the length() is applied to valid_rank_counts to get the right length.
+    # If hand has 3 same ranks and 2 different ranks, which means it has 3 with 
+    # same rank and 2 with same rank, it is Full House
+  } else if (is_flush) {
     return("Flush")
-  } else if (is_straight) { # 顺子
+    # If hand has 5 cards with same flush, it is Flush
+  } else if (is_straight) {
     return("Straight")
-  } else if (max(rank_counts) == 3) { # 三个相同
+    # If hand is straight, it is Straight
+  } else if (max(rank_counts) == 3) {
     return("Three of a Kind")
-  } else if (length(valid_rank_counts) == 3) { # 两对相同
+    # If hand has 3 same ranks, but the other 2 are differnet, it is Three of a kind
+  } else if (length(valid_rank_counts) == 3) {
     return("Two Pair")
-  } else if (length(valid_rank_counts) == 4) { # 一对相同
+    #### Here the length() is applied to valid_rank_counts to get the right length.
+    # If hand has 3 different ranks, but max of rank not equal to 3, it is Two Pair
+  } else if (length(valid_rank_counts) == 4) {
     return("One Pair")
+    #### Here the length() is applied to valid_rank_counts to get the right length.
+    # If hand has 4 differnt ranks, it is One Pair
   } else {
     return("High Card")
+    # If hand does not satisfy any above, then it is High Card
   }
 }
 
-# Function to simulate a round of 5-card stud poker
+#' Function to simulate a round of 5-card stud poker
+#'
+#' @param num_players an postive integer indicates the number of players
+#'
 simulate_poker_round <- function(num_players) {
-  # Ensure that the number of players doesnot exceed 10
+  #### Ensure that the number of players doesnot exceed 10. Stop the function and 
+  #### return the error if num_players > 10.
   if (num_players > 10) {
     stop("A deck of card can only be dealt to at most 10 people")
   }
   
-  # Define the suits and ranks
+  # Define the suits and ranks, create two vectors
   suits <- c("Hearts", "Diamonds", "Clubs", "Spades")
   ranks <- c(2:10, "Jack", "Queen", "King", "Ace")
   
-  # Create a deck of cards
+  # Create a deck of cards. expand.grid() will create a data frame with all the 
+  # combinations of the vectors. This will generate 52 cards with differnet ranks 
+  # and suits.
   deck <- expand.grid(Rank = ranks, Suit = suits)
   
   # Shuffle the deck
-  # set.seed(1)
+  #### Set the random seed to fix the generation
+  set.seed(1)
+  # nrow() will get the number of rows in data frame deck. sample() will generate 
+  # random number from 1 to nrow(deck). Use this as the new row order to get the 
+  # row from origin deck. This will shuffle the deck.
   deck <- deck[sample(nrow(deck)), ]
   
   # Deal 5 cards to each player
+  # Create a list to store the hands
   players <- list()
   for (i in 1:num_players) {
+    # The i-th player gets the 5(i-1)-th to 5i-th rows from shuffled deck
     hand <- deck[((i - 1) * 5 + 1):(i * 5), ]
+    # Assign the hand to i-th player list
     players[[i]] <- hand
+    # Call the function get_poker_hand_name() to get the name of current hand
     hand_name <- get_poker_hand_name(hand$Suit, hand$Rank)
+    # paste() will concatenate vectors and convert into character vector. cat() 
+    # will concate the objects and print it out. This will print out the i-th 
+    # player's 5 cards and the name of the hand.
     cat("Player", i, "Hand:", paste(hand$Rank, hand$Suit), "-", hand_name, "\n")
   }
 }
@@ -469,3 +559,9 @@ simulate_poker_round <- function(num_players) {
 ```{r}
 simulate_poker_round(10)
 ```
+
+```{r}
+simulate_poker_round(10)
+```
+
+This time, the outputs are correct.

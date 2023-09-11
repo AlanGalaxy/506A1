@@ -508,7 +508,7 @@ Player 4 Hand: 4 Spades King Diamonds Jack Spades Jack Clubs King Clubs - High C
 <p>In this code, the `get_poker_hand_name` function takes in vectors of suits and ranks, checks the hand for various poker hand combinations, and returns the name of the hand. The `simulate_poker_round` function simulates a round of 5-card stud poker for a specified number of players, deals hands to each player, and displays the hands along with their names using the first function.</p>
 </blockquote>
 <p>(b)</p>
-<p>The code can produce conbinations without modification.</p>
+<p>The code can produce combinations without modification.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -524,69 +524,121 @@ Player 9 Hand: 3 Hearts 7 Diamonds 8 Spades 10 Clubs 7 Clubs - High Card
 Player 10 Hand: 4 Diamonds 5 Diamonds Ace Spades Queen Hearts King Spades - High Card </code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Player 1 Hand: 5 Hearts Ace Clubs 2 Hearts 9 Clubs Jack Diamonds - High Card 
+Player 2 Hand: 5 Spades 2 Diamonds 6 Diamonds 8 Clubs 9 Diamonds - High Card 
+Player 3 Hand: 9 Spades Jack Hearts 8 Hearts 10 Hearts 3 Diamonds - High Card 
+Player 4 Hand: 4 Spades King Diamonds Jack Spades Jack Clubs King Clubs - High Card 
+Player 5 Hand: Queen Spades 8 Diamonds 4 Hearts 7 Hearts 3 Spades - High Card 
+Player 6 Hand: 3 Clubs 4 Clubs 6 Spades 6 Clubs Queen Diamonds - High Card 
+Player 7 Hand: King Hearts Ace Diamonds 9 Hearts 10 Diamonds Queen Clubs - High Card 
+Player 8 Hand: 2 Spades 5 Clubs 2 Clubs 7 Spades 10 Spades - High Card 
+Player 9 Hand: 3 Hearts 7 Diamonds 8 Spades 10 Clubs 7 Clubs - High Card 
+Player 10 Hand: 4 Diamonds 5 Diamonds Ace Spades Queen Hearts King Spades - High Card </code></pre>
+</div>
+</div>
 <p>(c) Explain the code.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to determine the name of a 5-card poker hand</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>get_poker_hand_name <span class="ot">&lt;-</span> <span class="cf">function</span>(suits, ranks) {</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure that the input vectors are of length 5</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(suits) <span class="sc">!=</span> <span class="dv">5</span> <span class="sc">||</span> <span class="fu">length</span>(ranks) <span class="sc">!=</span> <span class="dv">5</span>) {</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Both suits and ranks vectors should have a length of 5."</span>)</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count the frequency of each rank</span></span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  rank_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(ranks)</span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for flush and straight</span></span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  is_flush <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(suits)) <span class="sc">==</span> <span class="dv">1</span></span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  is_straight <span class="ot">&lt;-</span> <span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> (<span class="fu">max</span>(ranks) <span class="sc">-</span> <span class="fu">min</span>(ranks) <span class="sc">==</span> <span class="dv">4</span>)</span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the hand name</span></span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight) {</span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight Flush"</span>)</span>
-<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
-<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Four of a Kind"</span>)</span>
-<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">2</span>) {</span>
-<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Full House"</span>)</span>
-<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush) {</span>
-<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Flush"</span>)</span>
-<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_straight) {</span>
-<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight"</span>)</span>
-<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
-<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Three of a Kind"</span>)</span>
-<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
-<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Two Pair"</span>)</span>
-<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
-<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"One Pair"</span>)</span>
-<span id="cb53-32"><a href="#cb53-32" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb53-33"><a href="#cb53-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"High Card"</span>)</span>
-<span id="cb53-34"><a href="#cb53-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb53-35"><a href="#cb53-35" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb53-36"><a href="#cb53-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-37"><a href="#cb53-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to simulate a round of 5-card stud poker</span></span>
-<span id="cb53-38"><a href="#cb53-38" aria-hidden="true" tabindex="-1"></a>simulate_poker_round <span class="ot">&lt;-</span> <span class="cf">function</span>(num_players) {</span>
-<span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the suits and ranks</span></span>
-<span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a>  suits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hearts"</span>, <span class="st">"Diamonds"</span>, <span class="st">"Clubs"</span>, <span class="st">"Spades"</span>)</span>
-<span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a>  ranks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"Jack"</span>, <span class="st">"Queen"</span>, <span class="st">"King"</span>, <span class="st">"Ace"</span>)</span>
-<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-43"><a href="#cb53-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a deck of cards</span></span>
-<span id="cb53-44"><a href="#cb53-44" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">Rank =</span> ranks, <span class="at">Suit =</span> suits)</span>
-<span id="cb53-45"><a href="#cb53-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-46"><a href="#cb53-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Shuffle the deck</span></span>
-<span id="cb53-47"><a href="#cb53-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb53-48"><a href="#cb53-48" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> deck[<span class="fu">sample</span>(<span class="fu">nrow</span>(deck)), ]</span>
-<span id="cb53-49"><a href="#cb53-49" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb53-50"><a href="#cb53-50" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Deal 5 cards to each player</span></span>
-<span id="cb53-51"><a href="#cb53-51" aria-hidden="true" tabindex="-1"></a>  players <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb53-52"><a href="#cb53-52" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_players) {</span>
-<span id="cb53-53"><a href="#cb53-53" aria-hidden="true" tabindex="-1"></a>    hand <span class="ot">&lt;-</span> deck[((i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(i <span class="sc">*</span> <span class="dv">5</span>), ]</span>
-<span id="cb53-54"><a href="#cb53-54" aria-hidden="true" tabindex="-1"></a>    players[[i]] <span class="ot">&lt;-</span> hand</span>
-<span id="cb53-55"><a href="#cb53-55" aria-hidden="true" tabindex="-1"></a>    hand_name <span class="ot">&lt;-</span> <span class="fu">get_poker_hand_name</span>(hand<span class="sc">$</span>Suit, hand<span class="sc">$</span>Rank)</span>
-<span id="cb53-56"><a href="#cb53-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Player"</span>, i, <span class="st">"Hand:"</span>, <span class="fu">paste</span>(hand<span class="sc">$</span>Rank, hand<span class="sc">$</span>Suit), <span class="st">"-"</span>, hand_name, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb53-57"><a href="#cb53-57" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb53-58"><a href="#cb53-58" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb53-59"><a href="#cb53-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-60"><a href="#cb53-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
-<span id="cb53-61"><a href="#cb53-61" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">4</span>)  <span class="co"># Simulate a round with 4 players</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Function to determine the name of a 5-card poker hand</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param suits 5 dim vector represents the suit of each card</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ranks 5 dim vector represents the order of each card</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return the name of the given 5-card poker hand</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>get_poker_hand_name <span class="ot">&lt;-</span> <span class="cf">function</span>(suits, ranks) {</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure that the input vectors are of length 5</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(suits) <span class="sc">!=</span> <span class="dv">5</span> <span class="sc">||</span> <span class="fu">length</span>(ranks) <span class="sc">!=</span> <span class="dv">5</span>) {</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stop the function and print out information about the error</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Both suits and ranks vectors should have a length of 5."</span>)</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count the frequency of each rank</span></span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># table() will build a table containseach factor level and frequency</span></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  rank_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(ranks)</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for flush. If the hand is flush, suits will only contain one suit, </span></span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unique() will only return that suit. Then the length is 1.</span></span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>  is_flush <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(suits)) <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for straight. If the hand is straight, rank_counts "should" contain 5 </span></span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># levels, and the max level is 4 bigger than the min level</span></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>  is_straight <span class="ot">&lt;-</span> <span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> (<span class="fu">max</span>(ranks) <span class="sc">-</span> <span class="fu">min</span>(ranks) <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the hand name</span></span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight) {</span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight Flush"</span>)</span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand is flush and straight, it is Straight Flush</span></span>
+<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
+<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Four of a Kind"</span>)</span>
+<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 4 same ranks, it is Four of a Kind</span></span>
+<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">2</span>) {</span>
+<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Full House"</span>)</span>
+<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 same ranks and 2 different ranks, which means it has 3 with </span></span>
+<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># same rank and 2 with same rank, it is Full House</span></span>
+<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush) {</span>
+<span id="cb55-38"><a href="#cb55-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Flush"</span>)</span>
+<span id="cb55-39"><a href="#cb55-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 5 cards with same flush, it is Flush</span></span>
+<span id="cb55-40"><a href="#cb55-40" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_straight) {</span>
+<span id="cb55-41"><a href="#cb55-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight"</span>)</span>
+<span id="cb55-42"><a href="#cb55-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand is straight, it is Straight</span></span>
+<span id="cb55-43"><a href="#cb55-43" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb55-44"><a href="#cb55-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Three of a Kind"</span>)</span>
+<span id="cb55-45"><a href="#cb55-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 same ranks, but the other 2 are differnet, it is Three of a kind</span></span>
+<span id="cb55-46"><a href="#cb55-46" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb55-47"><a href="#cb55-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Two Pair"</span>)</span>
+<span id="cb55-48"><a href="#cb55-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 different ranks, but max of rank not equal to 3, it is Two Pair</span></span>
+<span id="cb55-49"><a href="#cb55-49" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
+<span id="cb55-50"><a href="#cb55-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"One Pair"</span>)</span>
+<span id="cb55-51"><a href="#cb55-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 4 differnt ranks, it is One Pair</span></span>
+<span id="cb55-52"><a href="#cb55-52" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb55-53"><a href="#cb55-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"High Card"</span>)</span>
+<span id="cb55-54"><a href="#cb55-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand does not satisfy any above, then it is High Card</span></span>
+<span id="cb55-55"><a href="#cb55-55" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-56"><a href="#cb55-56" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-57"><a href="#cb55-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-58"><a href="#cb55-58" aria-hidden="true" tabindex="-1"></a><span class="co">#' Function to simulate a round of 5-card stud poker</span></span>
+<span id="cb55-59"><a href="#cb55-59" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb55-60"><a href="#cb55-60" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param num_players an postive integer indicates the number of players</span></span>
+<span id="cb55-61"><a href="#cb55-61" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb55-62"><a href="#cb55-62" aria-hidden="true" tabindex="-1"></a>simulate_poker_round <span class="ot">&lt;-</span> <span class="cf">function</span>(num_players) {</span>
+<span id="cb55-63"><a href="#cb55-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the suits and ranks, create two vectors</span></span>
+<span id="cb55-64"><a href="#cb55-64" aria-hidden="true" tabindex="-1"></a>  suits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hearts"</span>, <span class="st">"Diamonds"</span>, <span class="st">"Clubs"</span>, <span class="st">"Spades"</span>)</span>
+<span id="cb55-65"><a href="#cb55-65" aria-hidden="true" tabindex="-1"></a>  ranks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"Jack"</span>, <span class="st">"Queen"</span>, <span class="st">"King"</span>, <span class="st">"Ace"</span>)</span>
+<span id="cb55-66"><a href="#cb55-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-67"><a href="#cb55-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a deck of cards. expand.grid() will create a data frame with all the </span></span>
+<span id="cb55-68"><a href="#cb55-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combinations of the vectors. This will generate 52 cards with differnet ranks </span></span>
+<span id="cb55-69"><a href="#cb55-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># and suits.</span></span>
+<span id="cb55-70"><a href="#cb55-70" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">Rank =</span> ranks, <span class="at">Suit =</span> suits)</span>
+<span id="cb55-71"><a href="#cb55-71" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-72"><a href="#cb55-72" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Shuffle the deck</span></span>
+<span id="cb55-73"><a href="#cb55-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set the random seed to fix the generation</span></span>
+<span id="cb55-74"><a href="#cb55-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb55-75"><a href="#cb55-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># nrow() will get the number of rows in data frame deck. sample() will generate </span></span>
+<span id="cb55-76"><a href="#cb55-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># random number from 1 to nrow(deck). Use this as the new row order to get the </span></span>
+<span id="cb55-77"><a href="#cb55-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># row from origin deck. This will shuffle the deck.</span></span>
+<span id="cb55-78"><a href="#cb55-78" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> deck[<span class="fu">sample</span>(<span class="fu">nrow</span>(deck)), ]</span>
+<span id="cb55-79"><a href="#cb55-79" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-80"><a href="#cb55-80" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Deal 5 cards to each player</span></span>
+<span id="cb55-81"><a href="#cb55-81" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a list to store the hands</span></span>
+<span id="cb55-82"><a href="#cb55-82" aria-hidden="true" tabindex="-1"></a>  players <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb55-83"><a href="#cb55-83" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_players) {</span>
+<span id="cb55-84"><a href="#cb55-84" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The i-th player gets the 5(i-1)-th to 5i-th rows from shuffled deck</span></span>
+<span id="cb55-85"><a href="#cb55-85" aria-hidden="true" tabindex="-1"></a>    hand <span class="ot">&lt;-</span> deck[((i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(i <span class="sc">*</span> <span class="dv">5</span>), ]</span>
+<span id="cb55-86"><a href="#cb55-86" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Assign the hand to i-th player list</span></span>
+<span id="cb55-87"><a href="#cb55-87" aria-hidden="true" tabindex="-1"></a>    players[[i]] <span class="ot">&lt;-</span> hand</span>
+<span id="cb55-88"><a href="#cb55-88" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Call the function get_poker_hand_name() to get the name of current hand</span></span>
+<span id="cb55-89"><a href="#cb55-89" aria-hidden="true" tabindex="-1"></a>    hand_name <span class="ot">&lt;-</span> <span class="fu">get_poker_hand_name</span>(hand<span class="sc">$</span>Suit, hand<span class="sc">$</span>Rank)</span>
+<span id="cb55-90"><a href="#cb55-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># paste() will concatenate vectors and convert into character vector. cat() </span></span>
+<span id="cb55-91"><a href="#cb55-91" aria-hidden="true" tabindex="-1"></a>    <span class="co"># will concate the objects and print it out. This will print out the i-th </span></span>
+<span id="cb55-92"><a href="#cb55-92" aria-hidden="true" tabindex="-1"></a>    <span class="co"># player's 5 cards and the name of the hand.</span></span>
+<span id="cb55-93"><a href="#cb55-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Player"</span>, i, <span class="st">"Hand:"</span>, <span class="fu">paste</span>(hand<span class="sc">$</span>Rank, hand<span class="sc">$</span>Suit), <span class="st">"-"</span>, hand_name, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb55-94"><a href="#cb55-94" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-95"><a href="#cb55-95" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-96"><a href="#cb55-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-97"><a href="#cb55-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb55-98"><a href="#cb55-98" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">4</span>)  <span class="co"># Simulate a round with 4 players</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Player 1 Hand: 5 Hearts Ace Clubs 2 Hearts 9 Clubs Jack Diamonds - High Card 
 Player 2 Hand: 5 Spades 2 Diamonds 6 Diamonds 8 Clubs 9 Diamonds - High Card 
@@ -606,99 +658,163 @@ Player 4 Hand: 4 Spades King Diamonds Jack Spades Jack Clubs King Clubs - High C
 </ul></li>
 <li><p>Are the names of the hands correct? (See <a href="https://www.cardplayer.com/rules-of-poker/hand-rankings">here</a> if you’re not familiar with poker hands.)</p>
 <ul>
-<li>No, they are incorrect. Some have one pair but named as “High Card”.</li>
+<li>No, they are incorrect. Some have one pair but named as “High Card”. Some have two pair but named as “High Card”. Some have 3 cards with same rank, but named as “High Card”.</li>
 </ul></li>
 <li><p>Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?</p>
 <ul>
 <li>Yes, there is no duplication in card across hands. If asking more than 10, the first 10 hands are fine, the 10-th hand will have 2 cards and 3 NA’s. All the rest hands will be filled with NA’s. Card name will be invalid.</li>
 </ul></li>
 </ul>
-<p>My correction code</p>
+<p><strong>My correction code</strong></p>
+<p><strong>Note that comments with “####” at the beginning are the explanations of changes I made.</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to determine the name of a 5-card poker hand</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>get_poker_hand_name <span class="ot">&lt;-</span> <span class="cf">function</span>(suits, ranks) {</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure that the input vectors are of length 5</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(suits) <span class="sc">!=</span> <span class="dv">5</span> <span class="sc">||</span> <span class="fu">length</span>(ranks) <span class="sc">!=</span> <span class="dv">5</span>) {</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Both suits and ranks vectors should have a length of 5."</span>)</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count the frequency of each rank</span></span>
-<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  rank_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(ranks)</span>
-<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  valid_rank_counts <span class="ot">&lt;-</span> rank_counts[rank_counts <span class="sc">!=</span> <span class="dv">0</span>]</span>
-<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for flush and straight</span></span>
-<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 是不是同花色</span></span>
-<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>  is_flush <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(suits)) <span class="sc">==</span> <span class="dv">1</span>  <span class="co"># if suits are the same, unique() will output one value, the length is 1.</span></span>
-<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 是不是顺子</span></span>
-<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>  is_straight <span class="ot">&lt;-</span> <span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> (<span class="fu">max</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">-</span> <span class="fu">min</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">==</span> <span class="dv">4</span>)</span>
-<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the hand name</span></span>
-<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight <span class="sc">&amp;&amp;</span> <span class="fu">max</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">==</span> <span class="dv">13</span>) {</span>
-<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Royal Flush"</span>)</span>
-<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight) {</span>
-<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight Flush"</span>)</span>
-<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
-<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Four of a Kind"</span>)</span>
-<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">2</span>) {</span>
-<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Full House"</span>)</span>
-<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush) { <span class="co"># 同花色</span></span>
-<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Flush"</span>)</span>
-<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_straight) { <span class="co"># 顺子</span></span>
-<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight"</span>)</span>
-<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) { <span class="co"># 三个相同</span></span>
-<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Three of a Kind"</span>)</span>
-<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">3</span>) { <span class="co"># 两对相同</span></span>
-<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Two Pair"</span>)</span>
-<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">4</span>) { <span class="co"># 一对相同</span></span>
-<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"One Pair"</span>)</span>
-<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb55-38"><a href="#cb55-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"High Card"</span>)</span>
-<span id="cb55-39"><a href="#cb55-39" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb55-40"><a href="#cb55-40" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb55-41"><a href="#cb55-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-42"><a href="#cb55-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to simulate a round of 5-card stud poker</span></span>
-<span id="cb55-43"><a href="#cb55-43" aria-hidden="true" tabindex="-1"></a>simulate_poker_round <span class="ot">&lt;-</span> <span class="cf">function</span>(num_players) {</span>
-<span id="cb55-44"><a href="#cb55-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure that the number of players doesnot exceed 10</span></span>
-<span id="cb55-45"><a href="#cb55-45" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (num_players <span class="sc">&gt;</span> <span class="dv">10</span>) {</span>
-<span id="cb55-46"><a href="#cb55-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"A deck of card can only be dealt to at most 10 people"</span>)</span>
-<span id="cb55-47"><a href="#cb55-47" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb55-48"><a href="#cb55-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-49"><a href="#cb55-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the suits and ranks</span></span>
-<span id="cb55-50"><a href="#cb55-50" aria-hidden="true" tabindex="-1"></a>  suits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hearts"</span>, <span class="st">"Diamonds"</span>, <span class="st">"Clubs"</span>, <span class="st">"Spades"</span>)</span>
-<span id="cb55-51"><a href="#cb55-51" aria-hidden="true" tabindex="-1"></a>  ranks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"Jack"</span>, <span class="st">"Queen"</span>, <span class="st">"King"</span>, <span class="st">"Ace"</span>)</span>
-<span id="cb55-52"><a href="#cb55-52" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-53"><a href="#cb55-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a deck of cards</span></span>
-<span id="cb55-54"><a href="#cb55-54" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">Rank =</span> ranks, <span class="at">Suit =</span> suits)</span>
-<span id="cb55-55"><a href="#cb55-55" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-56"><a href="#cb55-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Shuffle the deck</span></span>
-<span id="cb55-57"><a href="#cb55-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># set.seed(1)</span></span>
-<span id="cb55-58"><a href="#cb55-58" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> deck[<span class="fu">sample</span>(<span class="fu">nrow</span>(deck)), ]</span>
-<span id="cb55-59"><a href="#cb55-59" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb55-60"><a href="#cb55-60" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Deal 5 cards to each player</span></span>
-<span id="cb55-61"><a href="#cb55-61" aria-hidden="true" tabindex="-1"></a>  players <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb55-62"><a href="#cb55-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_players) {</span>
-<span id="cb55-63"><a href="#cb55-63" aria-hidden="true" tabindex="-1"></a>    hand <span class="ot">&lt;-</span> deck[((i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(i <span class="sc">*</span> <span class="dv">5</span>), ]</span>
-<span id="cb55-64"><a href="#cb55-64" aria-hidden="true" tabindex="-1"></a>    players[[i]] <span class="ot">&lt;-</span> hand</span>
-<span id="cb55-65"><a href="#cb55-65" aria-hidden="true" tabindex="-1"></a>    hand_name <span class="ot">&lt;-</span> <span class="fu">get_poker_hand_name</span>(hand<span class="sc">$</span>Suit, hand<span class="sc">$</span>Rank)</span>
-<span id="cb55-66"><a href="#cb55-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Player"</span>, i, <span class="st">"Hand:"</span>, <span class="fu">paste</span>(hand<span class="sc">$</span>Rank, hand<span class="sc">$</span>Suit), <span class="st">"-"</span>, hand_name, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb55-67"><a href="#cb55-67" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb55-68"><a href="#cb55-68" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Function to determine the name of a 5-card poker hand</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param suits 5 dim vector represents the suit of each card</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param ranks 5 dim vector represents the order of each card</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return the name of the given 5-card poker hand</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>get_poker_hand_name <span class="ot">&lt;-</span> <span class="cf">function</span>(suits, ranks) {</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure that the input vectors are of length 5</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(suits) <span class="sc">!=</span> <span class="dv">5</span> <span class="sc">||</span> <span class="fu">length</span>(ranks) <span class="sc">!=</span> <span class="dv">5</span>) {</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stop the function and print out information about the error</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Both suits and ranks vectors should have a length of 5."</span>)</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count the frequency of each rank</span></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># table() will build a table containseach factor level and frequency</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>  rank_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(ranks)</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### table(ranks) also contains the ranks with 0 frequency. Actually length</span></span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### (rank_count) = 13. Here we get the ranks whose frequency is bigger than 0.</span></span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>  valid_rank_counts <span class="ot">&lt;-</span> rank_counts[rank_counts <span class="sc">!=</span> <span class="dv">0</span>]</span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for flush. If the hand is flush, suits will only contain one suit, </span></span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unique() will only return that suit. Then the length is 1.</span></span>
+<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>  is_flush <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(suits)) <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for flush. If the hand is flush, suits will only contain one suit, </span></span>
+<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unique() will only return that suit. Then the length is 1.</span></span>
+<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### Here the length() is applied to valid_rank_counts to get the right length.</span></span>
+<span id="cb57-29"><a href="#cb57-29" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### ranks is a fector vector, to apply max() and min(), we need as.numeric() to </span></span>
+<span id="cb57-30"><a href="#cb57-30" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### convert them to numeric.</span></span>
+<span id="cb57-31"><a href="#cb57-31" aria-hidden="true" tabindex="-1"></a>  is_straight <span class="ot">&lt;-</span> <span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">5</span> <span class="sc">&amp;&amp;</span> (<span class="fu">max</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">-</span> <span class="fu">min</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">==</span> <span class="dv">4</span>)</span>
+<span id="cb57-32"><a href="#cb57-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-33"><a href="#cb57-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the hand name</span></span>
+<span id="cb57-34"><a href="#cb57-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight <span class="sc">&amp;&amp;</span> <span class="fu">max</span>(<span class="fu">as.numeric</span>(ranks)) <span class="sc">==</span> <span class="dv">13</span>) {</span>
+<span id="cb57-35"><a href="#cb57-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Royal Flush"</span>)</span>
+<span id="cb57-36"><a href="#cb57-36" aria-hidden="true" tabindex="-1"></a>    <span class="do">#### If hand is flush, straight and the biggest rank is 13(Ace), this is a </span></span>
+<span id="cb57-37"><a href="#cb57-37" aria-hidden="true" tabindex="-1"></a>    <span class="do">#### Royal Flush. The original code does not have this name.</span></span>
+<span id="cb57-38"><a href="#cb57-38" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush <span class="sc">&amp;&amp;</span> is_straight) {</span>
+<span id="cb57-39"><a href="#cb57-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight Flush"</span>)</span>
+<span id="cb57-40"><a href="#cb57-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand is flush and straight, it is Straight Flush</span></span>
+<span id="cb57-41"><a href="#cb57-41" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
+<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Four of a Kind"</span>)</span>
+<span id="cb57-43"><a href="#cb57-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 4 same ranks, it is Four of a Kind</span></span>
+<span id="cb57-44"><a href="#cb57-44" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">2</span>) {</span>
+<span id="cb57-45"><a href="#cb57-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Full House"</span>)</span>
+<span id="cb57-46"><a href="#cb57-46" aria-hidden="true" tabindex="-1"></a>    <span class="do">#### Here the length() is applied to valid_rank_counts to get the right length.</span></span>
+<span id="cb57-47"><a href="#cb57-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 same ranks and 2 different ranks, which means it has 3 with </span></span>
+<span id="cb57-48"><a href="#cb57-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># same rank and 2 with same rank, it is Full House</span></span>
+<span id="cb57-49"><a href="#cb57-49" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_flush) {</span>
+<span id="cb57-50"><a href="#cb57-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Flush"</span>)</span>
+<span id="cb57-51"><a href="#cb57-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 5 cards with same flush, it is Flush</span></span>
+<span id="cb57-52"><a href="#cb57-52" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (is_straight) {</span>
+<span id="cb57-53"><a href="#cb57-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Straight"</span>)</span>
+<span id="cb57-54"><a href="#cb57-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand is straight, it is Straight</span></span>
+<span id="cb57-55"><a href="#cb57-55" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">max</span>(rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb57-56"><a href="#cb57-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Three of a Kind"</span>)</span>
+<span id="cb57-57"><a href="#cb57-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 same ranks, but the other 2 are differnet, it is Three of a kind</span></span>
+<span id="cb57-58"><a href="#cb57-58" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">3</span>) {</span>
+<span id="cb57-59"><a href="#cb57-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Two Pair"</span>)</span>
+<span id="cb57-60"><a href="#cb57-60" aria-hidden="true" tabindex="-1"></a>    <span class="do">#### Here the length() is applied to valid_rank_counts to get the right length.</span></span>
+<span id="cb57-61"><a href="#cb57-61" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 3 different ranks, but max of rank not equal to 3, it is Two Pair</span></span>
+<span id="cb57-62"><a href="#cb57-62" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">length</span>(valid_rank_counts) <span class="sc">==</span> <span class="dv">4</span>) {</span>
+<span id="cb57-63"><a href="#cb57-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"One Pair"</span>)</span>
+<span id="cb57-64"><a href="#cb57-64" aria-hidden="true" tabindex="-1"></a>    <span class="do">#### Here the length() is applied to valid_rank_counts to get the right length.</span></span>
+<span id="cb57-65"><a href="#cb57-65" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand has 4 differnt ranks, it is One Pair</span></span>
+<span id="cb57-66"><a href="#cb57-66" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb57-67"><a href="#cb57-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"High Card"</span>)</span>
+<span id="cb57-68"><a href="#cb57-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If hand does not satisfy any above, then it is High Card</span></span>
+<span id="cb57-69"><a href="#cb57-69" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-70"><a href="#cb57-70" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb57-71"><a href="#cb57-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-72"><a href="#cb57-72" aria-hidden="true" tabindex="-1"></a><span class="co">#' Function to simulate a round of 5-card stud poker</span></span>
+<span id="cb57-73"><a href="#cb57-73" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb57-74"><a href="#cb57-74" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param num_players an postive integer indicates the number of players</span></span>
+<span id="cb57-75"><a href="#cb57-75" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
+<span id="cb57-76"><a href="#cb57-76" aria-hidden="true" tabindex="-1"></a>simulate_poker_round <span class="ot">&lt;-</span> <span class="cf">function</span>(num_players) {</span>
+<span id="cb57-77"><a href="#cb57-77" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### Ensure that the number of players doesnot exceed 10. Stop the function and </span></span>
+<span id="cb57-78"><a href="#cb57-78" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### return the error if num_players &gt; 10.</span></span>
+<span id="cb57-79"><a href="#cb57-79" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (num_players <span class="sc">&gt;</span> <span class="dv">10</span>) {</span>
+<span id="cb57-80"><a href="#cb57-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"A deck of card can only be dealt to at most 10 people"</span>)</span>
+<span id="cb57-81"><a href="#cb57-81" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-82"><a href="#cb57-82" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-83"><a href="#cb57-83" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the suits and ranks, create two vectors</span></span>
+<span id="cb57-84"><a href="#cb57-84" aria-hidden="true" tabindex="-1"></a>  suits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hearts"</span>, <span class="st">"Diamonds"</span>, <span class="st">"Clubs"</span>, <span class="st">"Spades"</span>)</span>
+<span id="cb57-85"><a href="#cb57-85" aria-hidden="true" tabindex="-1"></a>  ranks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"Jack"</span>, <span class="st">"Queen"</span>, <span class="st">"King"</span>, <span class="st">"Ace"</span>)</span>
+<span id="cb57-86"><a href="#cb57-86" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-87"><a href="#cb57-87" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a deck of cards. expand.grid() will create a data frame with all the </span></span>
+<span id="cb57-88"><a href="#cb57-88" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combinations of the vectors. This will generate 52 cards with differnet ranks </span></span>
+<span id="cb57-89"><a href="#cb57-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># and suits.</span></span>
+<span id="cb57-90"><a href="#cb57-90" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">Rank =</span> ranks, <span class="at">Suit =</span> suits)</span>
+<span id="cb57-91"><a href="#cb57-91" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-92"><a href="#cb57-92" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Shuffle the deck</span></span>
+<span id="cb57-93"><a href="#cb57-93" aria-hidden="true" tabindex="-1"></a>  <span class="do">#### Set the random seed to fix the generation</span></span>
+<span id="cb57-94"><a href="#cb57-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb57-95"><a href="#cb57-95" aria-hidden="true" tabindex="-1"></a>  <span class="co"># nrow() will get the number of rows in data frame deck. sample() will generate </span></span>
+<span id="cb57-96"><a href="#cb57-96" aria-hidden="true" tabindex="-1"></a>  <span class="co"># random number from 1 to nrow(deck). Use this as the new row order to get the </span></span>
+<span id="cb57-97"><a href="#cb57-97" aria-hidden="true" tabindex="-1"></a>  <span class="co"># row from origin deck. This will shuffle the deck.</span></span>
+<span id="cb57-98"><a href="#cb57-98" aria-hidden="true" tabindex="-1"></a>  deck <span class="ot">&lt;-</span> deck[<span class="fu">sample</span>(<span class="fu">nrow</span>(deck)), ]</span>
+<span id="cb57-99"><a href="#cb57-99" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-100"><a href="#cb57-100" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Deal 5 cards to each player</span></span>
+<span id="cb57-101"><a href="#cb57-101" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a list to store the hands</span></span>
+<span id="cb57-102"><a href="#cb57-102" aria-hidden="true" tabindex="-1"></a>  players <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb57-103"><a href="#cb57-103" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_players) {</span>
+<span id="cb57-104"><a href="#cb57-104" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The i-th player gets the 5(i-1)-th to 5i-th rows from shuffled deck</span></span>
+<span id="cb57-105"><a href="#cb57-105" aria-hidden="true" tabindex="-1"></a>    hand <span class="ot">&lt;-</span> deck[((i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(i <span class="sc">*</span> <span class="dv">5</span>), ]</span>
+<span id="cb57-106"><a href="#cb57-106" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Assign the hand to i-th player list</span></span>
+<span id="cb57-107"><a href="#cb57-107" aria-hidden="true" tabindex="-1"></a>    players[[i]] <span class="ot">&lt;-</span> hand</span>
+<span id="cb57-108"><a href="#cb57-108" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Call the function get_poker_hand_name() to get the name of current hand</span></span>
+<span id="cb57-109"><a href="#cb57-109" aria-hidden="true" tabindex="-1"></a>    hand_name <span class="ot">&lt;-</span> <span class="fu">get_poker_hand_name</span>(hand<span class="sc">$</span>Suit, hand<span class="sc">$</span>Rank)</span>
+<span id="cb57-110"><a href="#cb57-110" aria-hidden="true" tabindex="-1"></a>    <span class="co"># paste() will concatenate vectors and convert into character vector. cat() </span></span>
+<span id="cb57-111"><a href="#cb57-111" aria-hidden="true" tabindex="-1"></a>    <span class="co"># will concate the objects and print it out. This will print out the i-th </span></span>
+<span id="cb57-112"><a href="#cb57-112" aria-hidden="true" tabindex="-1"></a>    <span class="co"># player's 5 cards and the name of the hand.</span></span>
+<span id="cb57-113"><a href="#cb57-113" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Player"</span>, i, <span class="st">"Hand:"</span>, <span class="fu">paste</span>(hand<span class="sc">$</span>Rank, hand<span class="sc">$</span>Suit), <span class="st">"-"</span>, hand_name, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb57-114"><a href="#cb57-114" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-115"><a href="#cb57-115" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Player 1 Hand: Jack Clubs Ace Hearts 2 Spades King Diamonds 10 Spades - High Card 
-Player 2 Hand: Jack Spades Jack Diamonds 8 Diamonds Ace Clubs 4 Clubs - One Pair 
-Player 3 Hand: King Spades 10 Diamonds 5 Spades 3 Clubs 8 Clubs - High Card 
-Player 4 Hand: 9 Diamonds 6 Clubs 5 Diamonds 10 Hearts 8 Spades - High Card 
-Player 5 Hand: 7 Diamonds 3 Spades 6 Diamonds Ace Diamonds 4 Diamonds - High Card 
-Player 6 Hand: Queen Hearts Jack Hearts 8 Hearts 7 Clubs 3 Hearts - High Card 
-Player 7 Hand: Queen Spades 2 Hearts 2 Clubs 3 Diamonds Ace Spades - One Pair 
-Player 8 Hand: 6 Spades 6 Hearts King Hearts 9 Spades 9 Hearts - Two Pair 
-Player 9 Hand: 10 Clubs 7 Hearts 4 Spades Queen Clubs 4 Hearts - One Pair 
-Player 10 Hand: King Clubs 5 Clubs 7 Spades 9 Clubs 5 Hearts - One Pair </code></pre>
+<pre><code>Player 1 Hand: 5 Hearts Ace Clubs 2 Hearts 9 Clubs Jack Diamonds - High Card 
+Player 2 Hand: 5 Spades 2 Diamonds 6 Diamonds 8 Clubs 9 Diamonds - High Card 
+Player 3 Hand: 9 Spades Jack Hearts 8 Hearts 10 Hearts 3 Diamonds - High Card 
+Player 4 Hand: 4 Spades King Diamonds Jack Spades Jack Clubs King Clubs - Two Pair 
+Player 5 Hand: Queen Spades 8 Diamonds 4 Hearts 7 Hearts 3 Spades - High Card 
+Player 6 Hand: 3 Clubs 4 Clubs 6 Spades 6 Clubs Queen Diamonds - One Pair 
+Player 7 Hand: King Hearts Ace Diamonds 9 Hearts 10 Diamonds Queen Clubs - High Card 
+Player 8 Hand: 2 Spades 5 Clubs 2 Clubs 7 Spades 10 Spades - One Pair 
+Player 9 Hand: 3 Hearts 7 Diamonds 8 Spades 10 Clubs 7 Clubs - One Pair 
+Player 10 Hand: 4 Diamonds 5 Diamonds Ace Spades Queen Hearts King Spades - High Card </code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">simulate_poker_round</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Player 1 Hand: 5 Hearts Ace Clubs 2 Hearts 9 Clubs Jack Diamonds - High Card 
+Player 2 Hand: 5 Spades 2 Diamonds 6 Diamonds 8 Clubs 9 Diamonds - High Card 
+Player 3 Hand: 9 Spades Jack Hearts 8 Hearts 10 Hearts 3 Diamonds - High Card 
+Player 4 Hand: 4 Spades King Diamonds Jack Spades Jack Clubs King Clubs - Two Pair 
+Player 5 Hand: Queen Spades 8 Diamonds 4 Hearts 7 Hearts 3 Spades - High Card 
+Player 6 Hand: 3 Clubs 4 Clubs 6 Spades 6 Clubs Queen Diamonds - One Pair 
+Player 7 Hand: King Hearts Ace Diamonds 9 Hearts 10 Diamonds Queen Clubs - High Card 
+Player 8 Hand: 2 Spades 5 Clubs 2 Clubs 7 Spades 10 Spades - One Pair 
+Player 9 Hand: 3 Hearts 7 Diamonds 8 Spades 10 Clubs 7 Clubs - One Pair 
+Player 10 Hand: 4 Diamonds 5 Diamonds Ace Spades Queen Hearts King Spades - High Card </code></pre>
+</div>
+</div>
+<p>This time, the outputs are correct.</p>
 </section>
 
 </main>
