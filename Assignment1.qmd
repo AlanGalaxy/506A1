@@ -7,7 +7,7 @@ editor: visual
 
 ## Problem 1
 
-\(a\)
+(a) Import the data and name the columns.
 
 ```{r}
 wine <- read.table("D:/Code/R/wine/wine.data", sep = ",", header = FALSE)
@@ -19,13 +19,13 @@ colnames(wine) <- c("Class", "Alcohol", "Malic_acid", "Ash", "Alcalinity_of_ash"
                     "Proline")
 ```
 
-\(b\)
+(b) **Class1: 59, Class2: 71, Class3: 48**. Numbers are correct.
 
 ```{r}
 table(wine$Class)
 ```
 
-\(c\) 1.
+\(c\) 1. The wine with the highest alcohol content belongs to **Class1**.
 
 ```{r}
 max_alcohol <- max(wine$Alcohol)
@@ -33,7 +33,7 @@ class_max_alcohol <- wine[wine$Alcohol ==  max_alcohol, 1]
 print(paste("Highest alcohol is in class:", class_max_alcohol))
 ```
 
-\(c\) 2.
+\(c\) 2. The wine with the lowest alcohol content belongs to **Class2**.
 
 ```{r}
 min_alcohol <- min(wine$Alcohol)
@@ -41,19 +41,19 @@ class_min_alcohol <- wine[wine$Alcohol ==  min_alcohol, 1]
 print(paste("Lowest alcohol is in class:", class_min_alcohol))
 ```
 
-\(c\) 3.
+\(c\) 3. There are **26 wines** that have higher levels of magnesium.
 
 ```{r}
 table(wine$Magnesium > 114)
 ```
 
-\(c\) 4.
+\(c\) 4. The number of wines that have higher magnesium in each class are **Class1: 15, Class2: 6, Class3: 5.**
 
 ```{r}
 table(wine[wine$Magnesium > 114, 1])
 ```
 
-\(d\)
+\(d\) The first row is the average value of each variable, the second to forth rows are average value of each variable within each class.
 
 ```{r}
 overall_ave <- colMeans(wine[, -1])
@@ -61,15 +61,23 @@ class_1_ave <- colMeans(wine[wine$Class == 1, -1])
 class_2_ave <- colMeans(wine[wine$Class == 2, -1])
 class_3_ave <- colMeans(wine[wine$Class == 3, -1])
 average_tabel <- rbind(overall_ave, class_1_ave, class_2_ave, class_3_ave)
+average_tabel
 ```
 
-\(e\)
+\(e\) **My own calculation is down below.** Here are the built-in function carrying out the t-test.
 
 ```{r}
 t.test(wine[wine$Class == 1, "Ash"], wine[wine$Class == 2, "Ash"])
 t.test(wine[wine$Class == 1, "Ash"], wine[wine$Class == 3, "Ash"])
 t.test(wine[wine$Class == 2, "Ash"], wine[wine$Class == 3, "Ash"])
 ```
+
+My own calculation. Note that the t-test is:
+
+$$
+t = \frac{\bar X_1-\bar X_2}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}} \\
+df  \approx \frac{(\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2})^2}{\frac{s_1^4}{n_1^2(n_1-1)}+\frac{s_2^4}{n_2^2(n_2-1)}}
+$$
 
 ```{r}
 # my own code for t test
@@ -80,33 +88,198 @@ sample_var <- vector(length = 3)
 wine_Ash <- wine[, c(1, 4)]
 
 for(i in 1:3){
-  n[i] <- as.integer((class_number[i]))
-  sample_mean[i] <- mean(wine[wine$Class == i, "Ash"])
-  sample_var[i] <- var(wine[wine$Class == i, "Ash"])
+  n[i] <- as.integer((class_number[i])) # get the number for each class
+  sample_mean[i] <- mean(wine[wine$Class == i, "Ash"]) # calculate mean
+  sample_var[i] <- var(wine[wine$Class == i, "Ash"]) # calculate variance
 }
-
+# t statistic
 t12 <- (sample_mean[1] - sample_mean[2]) / sqrt(sample_var[1]/n[1] + sample_var[2]/n[2])
 t13 <- (sample_mean[1] - sample_mean[3]) / sqrt(sample_var[1]/n[1] + sample_var[3]/n[3])
 t23 <- (sample_mean[2] - sample_mean[3]) / sqrt(sample_var[2]/n[2] + sample_var[3]/n[3])
 
-
+# degree of freedom
 df12 <- (sample_var[1]/n[1]+sample_var[2]/n[2])^2/(sample_var[1]^2/n[1]^2/(n[1]-1)+sample_var[2]^2/n[2]^2/(n[2]-1))
 df13 <- (sample_var[1]/n[1]+sample_var[3]/n[3])^2/(sample_var[1]^2/n[1]^2/(n[1]-1)+sample_var[3]^2/n[3]^2/(n[3]-1))
 df23 <- (sample_var[2]/n[2]+sample_var[3]/n[3])^2/(sample_var[2]^2/n[2]^2/(n[2]-1)+sample_var[3]^2/n[3]^2/(n[3]-1))
 
-(1 - pt(abs(t12), df = df12)) * 2
-(1 - pt(abs(t13), df = df13)) * 2
-(1 - pt(abs(t23), df = df23)) * 2
+# calculate the p-value
+p12 <- (1 - pt(abs(t12), df = df12)) * 2
+p13 <- (1 - pt(abs(t13), df = df13)) * 2
+p23 <- (1 - pt(abs(t23), df = df23)) * 2
+cat("The t statistic between class 1 and class 2 is:", t12, "with p-value:", p12)
+cat("The t statistic between class 1 and class 3 is:", t13, "with p-value:", p13)
+cat("The t statistic between class 2 and class 3 is:", t23, "with p-value:", p23)
 ```
 
+Interpretation:
+
+The t-statistic between Class 1 and Class 2 is 4.418367, and the p-value is 2.124341e-05, which is less than 0.05. There is strong evidence to reject the null hypothesis. Class 1 and Class 2 are not at the same level of Ash.
+
+The t-statistic between Class 1 and Class 3 is 0.4648899, and the p-value is 0.642973, which is greater than 0.05. There is no evidence to reject the null hypothesis. Class 1 and Class 3 are at the same level of Ash.
+
+The t-statistic between Class 2 and Class 3 is -4.183958, and the p-value is 5.626653e-05, which is less than 0.05. There is strong evidence to reject the null hypothesis. Class 2 and Class 3 are not at the same level of Ash.
+
 ## Problem 2
+
+\(a\)
+
+```{r}
+#' is perfect power function
+#'
+#' @param x a positive integer we are going to check
+#' @param power a positive integer, the power value
+#'
+#' @return a list of length 2. The first entry is a logical value indicating whether the number is a perfect power. The second entry is the root. If the number is not perfect power, root = -1
+#'
+#' @examples > isPerfectPower(27, power = 3)
+#'           $isPerfect
+#'           [1] TRUE
+#'           $root
+#'           [1] 3
+#'
+isPerfectPower <- function(x, power) {
+  # make sure that number and power are positive
+  if (x <= 0 || power <= 0) {
+    cat("number and power should be positive integer")
+    return(list(isPerfect = FALSE, root = -1))
+  }
+  
+  root <- 2
+  while (root^power <= x) {
+    # loop through all natural number with the power, until the value is larger than the number.
+    if (root^power == x) {
+      return(list(isPerfect = TRUE, root = root))
+    }
+    root <- root + 1
+  }
+  # no root is found, then return FALSE and root = -1.
+  return(list(FALSE, -1))
+}
+
+isPerfectPower(4, 2)
+isPerfectPower(1000, 2)
+isPerfectPower(5066499666, 4979)
+isPerfectPower(1024, 10)
+isPerfectPower(2048, 11)
+```
+
+\(b\)
+
+```{r}
+#' find root power function
+#'
+#' @param x a positive integer we are going to find root
+#'
+#' @return if number is perfect power, return the string equation. If not, return NULL
+#'
+#' @examples > findRootPower(125)
+#'           [1] "125 = 5^3"
+#'
+findRootPower <- function(x) {
+  # make sure that number is greater than 1.
+  if (x <= 1) {
+    cat("number should be greater than 1.\n")
+    return(invisible(NULL))
+  }
+  
+  power <- 2
+  while (2^power <= x) {
+    # loop through all the powers, until the smallest perfect power is larger than the number.
+    result <- isPerfectPower(x, power)
+    if (isTRUE(result$isPerfect)) {
+      return(paste(x, " = ", result$root, "^", power, sep = ""))
+    }
+    power <- power + 1
+  }
+  # no root is found
+  cat(x, "is not a perfect power.\n")
+  return(invisible(NULL))
+}
+```
+
+```{r}
+findRootPower(27)
+findRootPower(13060694016)
+findRootPower(7776)
+findRootPower(170859375)
+findRootPower(58247422)
+findRootPower(94143178827)
+```
 
 ## Problem 3
 
 > To accomplish this task, we'll create two R functions. The first function will determine the name of a 5-card hand in 5-card stud poker, and the second function will simulate dealing a round of cards for a specified number of players and display the hands along with their names. Here are the two functions:
 >
 > ```{r}
->
+> # Function to determine the name of a 5-card poker hand
+> get_poker_hand_name <- function(suits, ranks) {
+>   # Ensure that the input vectors are of length 5
+>   if (length(suits) != 5 || length(ranks) != 5) {
+>     stop("Both suits and ranks vectors should have a length of 5.")
+>   }
+>   
+>   # Count the frequency of each rank
+>   rank_counts <- table(ranks)
+>   
+>   # Check for flush and straight
+>   is_flush <- length(unique(suits)) == 1
+>   is_straight <- length(rank_counts) == 5 && (max(ranks) - min(ranks) == 4)
+>   
+>   # Determine the hand name
+>   if (is_flush && is_straight) {
+>     return("Straight Flush")
+>   } else if (max(rank_counts) == 4) {
+>     return("Four of a Kind")
+>   } else if (max(rank_counts) == 3 && length(rank_counts) == 2) {
+>     return("Full House")
+>   } else if (is_flush) {
+>     return("Flush")
+>   } else if (is_straight) {
+>     return("Straight")
+>   } else if (max(rank_counts) == 3) {
+>     return("Three of a Kind")
+>   } else if (length(rank_counts) == 3) {
+>     return("Two Pair")
+>   } else if (length(rank_counts) == 4) {
+>     return("One Pair")
+>   } else {
+>     return("High Card")
+>   }
+> }
+> >
+> # Function to simulate a round of 5-card stud poker
+> simulate_poker_round <- function(num_players) {
+>   # Define the suits and ranks
+>   suits <- c("Hearts", "Diamonds", "Clubs", "Spades")
+>   ranks <- c(2:10, "Jack", "Queen", "King", "Ace")
+>   
+>   # Create a deck of cards
+>   deck <- expand.grid(Rank = ranks, Suit = suits)
+>   
+>   # Shuffle the deck
+>   deck <- deck[sample(nrow(deck)), ]
+>   
+>   # Deal 5 cards to each player
+>   players <- list()
+>   for (i in 1:num_players) {
+>     hand <- deck[((i - 1) * 5 + 1):(i * 5), ]
+>     players[[i]] <- hand
+>     hand_name <- get_poker_hand_name(hand$Suit, hand$Rank)
+>     cat("Player", i, "Hand:", paste(hand$Rank, hand$Suit), "-", hand_name, "\n")
+>   }
+> }
+> >
+> # Example usage:
+> simulate_poker_round(4)  # Simulate a round with 4 players
+> >
 > ```
 >
 > In this code, the \`get_poker_hand_name\` function takes in vectors of suits and ranks, checks the hand for various poker hand combinations, and returns the name of the hand. The \`simulate_poker_round\` function simulates a round of 5-card stud poker for a specified number of players, deals hands to each player, and displays the hands along with their names using the first function.
+
+-   Are the inputs and outputs as described above?
+
+-   Are the hands valid (e.g. real cards, no duplicates, right number)?
+
+-   Are the names of the hands correct? (See [here](https://www.cardplayer.com/rules-of-poker/hand-rankings) if you're not familiar with poker hands.)
+
+-   Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
