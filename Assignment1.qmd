@@ -2,8 +2,13 @@
 title: "Assignment1"
 author: "Jiaqi Sun"
 format: html
+embed-resources: true
 editor: visual
+code-fold: true
+code-summary: "Show the code"
 ---
+
+The Github repository: [Github](https://github.com/AlanGalaxy/510A1)
 
 ## Problem 1
 
@@ -28,16 +33,16 @@ table(wine$Class)
 \(c\) 1. The wine with the highest alcohol content belongs to **Class1**.
 
 ```{r}
-max_alcohol <- max(wine$Alcohol)
-class_max_alcohol <- wine[wine$Alcohol ==  max_alcohol, 1]
+max_alcohol <- which.max(wine$Alcohol)
+class_max_alcohol <- wine[max_alcohol, 1]
 print(paste("Highest alcohol is in class:", class_max_alcohol))
 ```
 
 \(c\) 2. The wine with the lowest alcohol content belongs to **Class2**.
 
 ```{r}
-min_alcohol <- min(wine$Alcohol)
-class_min_alcohol <- wine[wine$Alcohol ==  min_alcohol, 1]
+min_alcohol <- which.min(wine$Alcohol)
+class_min_alcohol <- wine[min_alcohol, 1]
 print(paste("Lowest alcohol is in class:", class_min_alcohol))
 ```
 
@@ -125,7 +130,7 @@ cat("The t statistic between class 1 and class 3 is:", t13, "with p-value:", p13
 cat("The t statistic between class 2 and class 3 is:", t23, "with p-value:", p23)
 ```
 
-Interpretation:
+**Interpretation**:
 
 The t-statistic between Class 1 and Class 2 is 4.418367, and the p-value is 2.124341e-05, which is less than 0.05. There is strong evidence to reject the null hypothesis. Class 1 and Class 2 are not at the same level of Ash.
 
@@ -156,7 +161,7 @@ The t-statistic between Class 2 and Class 3 is -4.183958, and the p-value is 5.6
 isPerfectPower <- function(x, power) {
   # make sure that number and power are positive
   if (x <= 0 || power <= 0) {
-    cat("number and power should be positive integer")
+    cat("number and power should be positive integer.\n")
     return(list(isPerfect = FALSE, root = -1))
   }
   
@@ -303,7 +308,7 @@ findRootPower(94143178827)
 
 \(b\)
 
-The code can produce combinations without modification.
+The code can produce combinations **without** modification.
 
 ```{r}
 simulate_poker_round(10)
@@ -413,10 +418,12 @@ simulate_poker_round <- function(num_players) {
 }
 
 # Example usage:
-simulate_poker_round(4)  # Simulate a round with 4 players
+simulate_poker_round(10)  # Simulate a round with 10 players
 ```
 
 \(d\)
+
+The code **does not** produce accurate results.
 
 -   Are the inputs and outputs as described above?
 
@@ -424,15 +431,19 @@ simulate_poker_round(4)  # Simulate a round with 4 players
 
 -   Are the hands valid (e.g. real cards, no duplicates, right number)?
 
-    -   Yes, they are valid.
+    -   Yes, they are valid. They are real cards, no duplicates, and right numbers.
 
 -   Are the names of the hands correct? (See [here](https://www.cardplayer.com/rules-of-poker/hand-rankings) if you're not familiar with poker hands.)
 
-    -   No, they are incorrect. Some have one pair but named as "High Card". Some have two pair but named as "High Card". Some have 3 cards with same rank, but named as "High Card".
+    -   No, they are incorrect. Some have one pair but named as "High Card". Some have two pair but named as "High Card". Some have 3 cards with same rank, but named as "High Card". Many of them are misclassified. Like the result in (c), Player 4 hand has two King and two Jack. It should be Two Pair.
 
 -   Does it ensure no duplicates in cards across hands? What happens if you ask for more than 10 hands to be dealt (as there are only 52 cards in a standard deck)?
 
-    -   Yes, there is no duplication in card across hands. If asking more than 10, the first 10 hands are fine, the 10-th hand will have 2 cards and 3 NA's. All the rest hands will be filled with NA's. Card name will be invalid.
+    -   Yes, there is no duplication in card across hands. If asking more than 10, the first 10 hands are fine, the 11-th hand will have 2 cards and 3 NA's. All the rest hands will be filled with NA's. Card name will be invalid.
+
+        ```{r}
+        simulate_poker_round(12)
+        ```
 
 **My correction code**
 
@@ -469,12 +480,13 @@ get_poker_hand_name <- function(suits, ranks) {
   #### Here the length() is applied to valid_rank_counts to get the right length.
   #### ranks is a fector vector, to apply max() and min(), we need as.numeric() to 
   #### convert them to numeric.
-  is_straight <- length(valid_rank_counts) == 5 && (max(as.numeric(ranks)) - min(as.numeric(ranks)) == 4)
+  is_straight <- length(valid_rank_counts) == 5 && (max(as.numeric(ranks)) 
+                                                    - min(as.numeric(ranks)) == 4)
   
   # Determine the hand name
   if (is_flush && is_straight && max(as.numeric(ranks)) == 13) {
     return("Royal Flush")
-    #### If hand is flush, straight and the biggest rank is 13(Ace), this is a 
+    #### If hand is flush, straight and the biggest rank is 13 (Ace), this is a 
     #### Royal Flush. The original code does not have this name.
   } else if (is_flush && is_straight) {
     return("Straight Flush")
@@ -518,7 +530,7 @@ simulate_poker_round <- function(num_players) {
   #### Ensure that the number of players doesnot exceed 10. Stop the function and 
   #### return the error if num_players > 10.
   if (num_players > 10) {
-    stop("A deck of card can only be dealt to at most 10 people")
+    stop("A deck of card can only be dealt to at most 10 people.\n")
   }
   
   # Define the suits and ranks, create two vectors
